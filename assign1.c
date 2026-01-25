@@ -7,8 +7,8 @@
 
 // Initialize table FIRST
 // Address Primes in Main Diagonal First then fill table
-const int COUNT = 100;
 
+const int COUNT = 100;
 
 int table [100][100];
 int prime;
@@ -34,54 +34,10 @@ int primes[100] = {
     467, 479, 487, 491, 499, 503, 509, 521, 523, 541
 };
 
-int search (int input) { // Return coordinates
+void init_table () {
 
-    int og_input = input;
-    int mul_count = 0; // Sets counter for amount of multiple
-
-    // Check if the input is even or odd
-    if (og_input % 2 == 0) {
-        is_even = true;
-
-        for(i = 0; i < COUNT; i = i + 2) { // Iterate through only the positive rows
-            for(j = 0; j < COUNT; j++) {
-                if (input == table[i][j]) {
-
-                    mul_count++;
-                    printf("(%d, %d)\n", i, j);
-                    printf("%d", input);
-                    
-                    input = input + og_input; // Next multiple
-                } else {
-                    continue;
-                }
-            }
-        }
-
-    } else {
-        is_even = false;
-
-        for(x = 1; x < COUNT; x = x + 2) { // Iterate through only the negative rows
-            for(y = 0; y < COUNT; y++) {
-                if (input == table[x][y]) {
-
-                    mul_count++;
-                    printf("(%d, %d)\n", x, y);
-                    printf("%d\n", input);
-
-                    input = input + og_input; // Next multiple
-                } else {
-                    continue;
-                }
-            }
-        }
-    }
-
-    return mul_count;
-}
-
-
-int init_table () {
+    even = 0;
+    odd  = 1;
 
     // Main diagonal
     for (z = 0; z < COUNT; z++) {
@@ -93,11 +49,11 @@ int init_table () {
     for(i = 0; i < COUNT; i = i + 2) { 
 
         for(j = 0; j < COUNT; j++) {
-            if (i == j) { // Detects Main Diaganol Pair, we skip the pair
-                continue;
+            if (i != j) { // Detects Main Diaganol Pair, we skip the pair
+                table[i][j] = even;
+                even = even + 2;
             }
-            table[i][j] = even;
-            even = even + 2;
+            
         }
     }
 
@@ -105,14 +61,32 @@ int init_table () {
     for (x = 1; x < COUNT; x = x + 2) {
 
         for (y = 0; y < COUNT; y++) {
-            if (x == y) {
-                continue;
-            }
-                table[x][y] = odd; 
+            if (x != y) {
+                table[x][y] = odd;
                 odd = odd + 2;
+            }
         }
     }
+}
+
+int search (int input) { // Return coordinates
+
+    int og_input = input;
     
+    int mul_count = 0; // Sets counter for amount of multiple
+
+    for (i = 0; i < COUNT; i++) {
+        for (j = 0; j < COUNT; j++) {
+            if (input == table[i][j]) {
+                mul_count++;
+                printf("(%d, %d) = %d\n", i, j, input);
+                input = input + og_input; // Next multiple
+            } else {
+                continue;
+            }
+        }
+    }
+    return mul_count;
 }
 
 int main() {
@@ -121,20 +95,16 @@ int main() {
     int run = true;
     int run_input;
 
-    even = 0;
-    odd  = 1;
+    init_table();
 
     while (run) {
 
     printf("Enter a Number to Search: ");
     scanf("%d", &input);
-    
-    init_table();
 
-    search(input);
     mul_count = search(input);
 
-    printf("Multiple Amount: %d\n", mul_count);
+    printf("Multiple(s) of %d Found: %d\n", input, mul_count);
     printf("Input a new number? (1 = Yes / 0 = No): \n");
     scanf("%d", &run_input);
 
@@ -146,9 +116,8 @@ int main() {
         printf("\n");
         continue;
     }
-
-    // printf(("%d", "%d")\n, i, j);
+    
     }
-   
+
 }
 
