@@ -7,9 +7,9 @@
 // UCID: 30214484
 
 // Variables
-const int TABLE_COUNT = 100;
+#define TABLE_COUNT 100
 
-int table[100][100]; // Table Size Initialization (100x100)
+int table[TABLE_COUNT][TABLE_COUNT]; // Table Size Initialization (100x100)
 
 int pos_rows, pos_cols, neg_rows, neg_cols, search_rows, search_cols, z; // Iteration variables
 
