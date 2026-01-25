@@ -12,14 +12,16 @@ const int COUNT = 100;
 
 int table [100][100];
 int prime;
-int i, j, x, y, z;
+
+int i, j, x, y, z; // Iteration variables
+
 int even = 0;
 int odd = 1;
 bool is_even = true;
 
 
 // First 100 Prime Numbers
-int primes[100] = {
+int primes[100] = { 
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
     31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
     73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
@@ -47,12 +49,11 @@ int search (int input) { // Return coordinates
 
                     mul_count++;
                     printf("(%d, %d)\n", i, j);
-                    printf("%d\n", input);
+                    printf("%d", input);
                     
                     input = input + og_input; // Next multiple
                 } else {
                     continue;
-                    
                 }
             }
         }
@@ -79,11 +80,8 @@ int search (int input) { // Return coordinates
     return mul_count;
 }
 
-int main() {
 
-    int input, mul_count;
-    printf("Enter a Number to Search: \n");
-    scanf("%d", &input);
+int init_table () {
 
     // Main diagonal
     for (z = 0; z < COUNT; z++) {
@@ -115,11 +113,42 @@ int main() {
         }
     }
     
-    search(input);
+}
 
-    printf("%d", mul_count);
+int main() {
+
+    int input, mul_count;
+    int run = true;
+    int run_input;
+
+    even = 0;
+    odd  = 1;
+
+    while (run) {
+
+    printf("Enter a Number to Search: ");
+    scanf("%d", &input);
+    
+    init_table();
+
+    search(input);
+    mul_count = search(input);
+
+    printf("Multiple Amount: %d\n", mul_count);
+    printf("Input a new number? (1 = Yes / 0 = No): \n");
+    scanf("%d", &run_input);
+
+    if (run_input == 0) {
+        printf("Program Stopped!");
+        run = false;
+        break;
+    } else {
+        printf("\n");
+        continue;
+    }
 
     // printf(("%d", "%d")\n, i, j);
-
+    }
+   
 }
 
