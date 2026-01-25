@@ -1,24 +1,21 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 
 // CPSC 355 A1
 // Zaine Ancheta
 // UCID: 30214484
 
-// Initialize table FIRST
-// Address Primes in Main Diagonal First then fill table
+// Variables
+const int TABLE_COUNT = 100;
 
-const int COUNT = 100;
+int table [TABLE_COUNT][TABLE_COUNT]; // Table Size Initialization (100x100)
 
-int table [100][100];
-int prime;
-
-int i, j, x, y, z; // Iteration variables
+int pos_rows, pos_cols, neg_rows, neg_cols, search_rows, search_cols, z; // Iteration variables
 
 int even = 0;
 int odd = 1;
 bool is_even = true;
-
 
 // First 100 Prime Numbers
 int primes[100] = { 
@@ -34,23 +31,25 @@ int primes[100] = {
     467, 479, 487, 491, 499, 503, 509, 521, 523, 541
 };
 
+// Table Initialization Function
 void init_table () {
 
     even = 0;
     odd  = 1;
 
-    // Main diagonal
-    for (z = 0; z < COUNT; z++) {
+    // Main Diagonal Initialization
+    for (z = 0; z < TABLE_COUNT; z++) {
         table[z][z] = primes[z];
     }
 
-    // Main Table
-    // Positive Rows
-    for(i = 0; i < COUNT; i = i + 2) { 
+    // Main Table Initialization
 
-        for(j = 0; j < COUNT; j++) {
-            if (i != j) { // Detects Main Diaganol Pair, we skip the pair
-                table[i][j] = even;
+    // Positive Rows
+    for(pos_rows = 0; pos_rows < TABLE_COUNT; pos_rows = pos_rows + 2) { 
+
+        for(pos_cols = 0; pos_cols < TABLE_COUNT; pos_cols++) {
+            if (pos_rows != pos_cols) { // Detects Main Diagonal Pair, we skip the pair
+                table[pos_rows][pos_cols] = even;
                 even = even + 2;
             }
             
@@ -58,66 +57,73 @@ void init_table () {
     }
 
     // Negative Rows
-    for (x = 1; x < COUNT; x = x + 2) {
-
-        for (y = 0; y < COUNT; y++) {
-            if (x != y) {
-                table[x][y] = odd;
+    for (neg_rows = 1; neg_rows < TABLE_COUNT; neg_rows = neg_rows + 2) {
+        for (neg_cols = 0; neg_cols < TABLE_COUNT; neg_cols++) {
+            if (neg_rows != neg_cols) {
+                table[neg_rows][neg_cols] = odd;
                 odd = odd + 2;
             }
         }
     }
 }
 
-int search (int input) { // Return coordinates
+// Search Function
+int search (int input) {
 
-    int og_input = input;
-    
-    int mul_count = 0; // Sets counter for amount of multiple
+        int mul_count = 0; 
 
-    for (i = 0; i < COUNT; i++) {
-        for (j = 0; j < COUNT; j++) {
-            if (input == table[i][j]) {
-                mul_count++;
-                printf("(%d, %d) = %d\n", i, j, input);
-                input = input + og_input; // Next multiple
-            } else {
-                continue;
+        for (search_rows = 0; search_rows < TABLE_COUNT; search_rows++) {
+            for (search_cols = 0; search_cols < TABLE_COUNT; search_cols++) {
+                if (input != 0 && table[search_rows][search_cols] % input == 0) {
+                    mul_count++;
+                    printf("(%d, %d) = %d\n", search_rows, search_cols, table[search_rows][search_cols]);
             }
         }
     }
-    return mul_count;
+        return mul_count;
+}
+
+float percent_calculation (float amount) {
+
+    float mul_percent = amount / (100.0f * 100.f) * 100.0f;
+    printf("Percentage of Table: %.2f%%\n", mul_percent);
+
+    return mul_percent;
 }
 
 int main() {
 
     int input, mul_count;
+    float mul_percent;
     int run = true;
-    int run_input;
+    int run_con;
 
     init_table();
 
+    // Main Program Loop
     while (run) {
 
-    printf("Enter a Number to Search: ");
-    scanf("%d", &input);
+        printf("Enter a Number to Search: ");
+        scanf("%d", &input);
 
-    mul_count = search(input);
+        mul_count = search(input);
+        
+        percent_calculation((float)mul_count);
 
-    printf("Multiple(s) of %d Found: %d\n", input, mul_count);
-    printf("Input a new number? (1 = Yes / 0 = No): \n");
-    scanf("%d", &run_input);
+        printf("Multiple(s) of %d Found: %d\n", input, mul_count);
+        printf("Input a new number? (1 = Yes / 0 = No): ");
+        scanf("%d", &run_con);
 
-    if (run_input == 0) {
-        printf("Program Stopped!");
-        run = false;
-        break;
-    } else {
-        printf("\n");
-        continue;
+        if  (run_con == 0) {
+            printf("Program Stopped!");
+            run = false;
+            break;
+        } else {
+            printf("\n");
+            continue;
+        }
     }
-    
-    }
 
+    return 0;
 }
 
