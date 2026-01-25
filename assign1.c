@@ -9,7 +9,7 @@
 // Variables
 const int TABLE_COUNT = 100;
 
-int table [TABLE_COUNT][TABLE_COUNT]; // Table Size Initialization (100x100)
+int table[100][100]; // Table Size Initialization (100x100)
 
 int pos_rows, pos_cols, neg_rows, neg_cols, search_rows, search_cols, z; // Iteration variables
 
@@ -32,10 +32,12 @@ int primes[100] = {
 };
 
 // Table Initialization Function
-void init_table () {
+void init_table (FILE *log) {
 
     even = 0;
     odd  = 1;
+
+    fprintf(log, "Initial 100x100 Table:\n");
 
     // Main Diagonal Initialization
     for (z = 0; z < TABLE_COUNT; z++) {
@@ -68,24 +70,28 @@ void init_table () {
 }
 
 // Search Function
-int search (int input) {
+int search (int input, FILE *log) {
 
         int mul_count = 0; 
+
+        fprintf(log, "User input: %d\n", input);
 
         for (search_rows = 0; search_rows < TABLE_COUNT; search_rows++) {
             for (search_cols = 0; search_cols < TABLE_COUNT; search_cols++) {
                 if (input != 0 && table[search_rows][search_cols] % input == 0) {
                     mul_count++;
                     printf("(%d, %d) = %d\n", search_rows, search_cols, table[search_rows][search_cols]);
+                    fprintf(log, "(%d, %d) = %d\n", search_rows, search_cols, table[search_rows][search_cols]);
             }
         }
     }
         return mul_count;
 }
 
-float percent_calculation (float amount) {
+// Percentage Calculation Function 
+float percent_calculation (float multiples) {
 
-    float mul_percent = amount / (100.0f * 100.f) * 100.0f;
+    float mul_percent = multiples / (100.0f * 100.f) * 100.0f;
     printf("Percentage of Table: %.2f%%\n", mul_percent);
 
     return mul_percent;
@@ -93,12 +99,14 @@ float percent_calculation (float amount) {
 
 int main() {
 
+    FILE *log = fopen("assign1.log", "w");
+
     int input, mul_count;
     float mul_percent;
     int run = true;
     int run_con;
 
-    init_table();
+    init_table(log);
 
     // Main Program Loop
     while (run) {
@@ -106,16 +114,21 @@ int main() {
         printf("Enter a Number to Search: ");
         scanf("%d", &input);
 
-        mul_count = search(input);
+        mul_count = search(input, log);
         
-        percent_calculation((float)mul_count);
+        mul_percent = percent_calculation((float)mul_count);
 
         printf("Multiple(s) of %d Found: %d\n", input, mul_count);
+
+        fprintf(log, "Total matches: %d\n", mul_count);
+        fprintf(log, "Percent of table: %.2f%%\n\n", mul_percent);
+
         printf("Input a new number? (1 = Yes / 0 = No): ");
         scanf("%d", &run_con);
 
         if  (run_con == 0) {
             printf("Program Stopped!");
+            fprintf(log, "Program stopped by user.\n");
             run = false;
             break;
         } else {
@@ -124,6 +137,7 @@ int main() {
         }
     }
 
+    fclose(log);
     return 0;
 }
 
