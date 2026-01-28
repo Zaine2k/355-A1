@@ -18,9 +18,9 @@ int primes[TABLE_COUNT];
 
 // Prime Numbers Generator Function
 void genPrimes(int count_prime) {
-    int counter = 0;
+    int prime_array_num = 0;
     int prime_num = 2;
-    while (counter < count_prime) {
+    while (prime_array_num < count_prime) {
         bool is_prime = true; 
         for (int i = 2; i < prime_num; i++) {
             if (prime_num % i == 0) {
@@ -30,8 +30,8 @@ void genPrimes(int count_prime) {
         }
         
         if (is_prime == true) {
-            primes[counter] = prime_num;
-            counter++;
+            primes[prime_array_num] = prime_num;
+            prime_array_num++;
         }
         prime_num++;
     }
