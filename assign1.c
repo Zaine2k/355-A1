@@ -11,50 +11,53 @@
 
 int table[TABLE_COUNT][TABLE_COUNT]; // Table Size Initialization (100x100)
 
-int pos_rows, pos_cols, neg_rows, neg_cols, search_rows, search_cols, z; // Iteration variables
+int pos_rows, pos_cols, neg_rows, neg_cols, search_rows, search_cols; // Iteration variables
 
-int even = 0;
-int odd = 1;
-bool is_even = true;
+// Initialize first 100 Prime Numbers
+int primes[TABLE_COUNT];
 
-// First 100 Prime Numbers
-int primes[100] = { 
-    2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
-    31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
-    73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
-    127, 131, 137, 139, 149, 151, 157, 163, 167, 173,
-    179, 181, 191, 193, 197, 199, 211, 223, 227, 229,
-    233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
-    283, 293, 307, 311, 313, 317, 331, 337, 347, 349,
-    353, 359, 367, 373, 379, 383, 389, 397, 401, 409,
-    419, 421, 431, 433, 439, 443, 449, 457, 461, 463,
-    467, 479, 487, 491, 499, 503, 509, 521, 523, 541
-};
+// Prime Numbers Generator Function
+void genPrimes(int count_prime) {
+    int counter = 0;
+    int prime_num = 2;
+    while (counter < count_prime) {
+        bool is_prime = true; 
+        for (int i = 2; i < prime_num; i++) {
+            if (prime_num % i == 0) {
+                is_prime = false; 
+                break;
+            }
+        }
+        
+        if (is_prime == true) {
+            primes[counter] = prime_num;
+            counter++;
+        }
+        prime_num++;
+    }
+}
 
 // Table Initialization Function
 void init_table (FILE *log) {
 
-    even = 0;
-    odd  = 1;
+    int even = 0;
+    int odd  = 1;
 
     fprintf(log, "Initial 100x100 Table:\n");
 
     // Main Diagonal Initialization
-    for (z = 0; z < TABLE_COUNT; z++) {
+    for (int z = 0; z < TABLE_COUNT; z++) {
         table[z][z] = primes[z];
     }
 
     // Main Table Initialization
-
     // Positive Rows
     for(pos_rows = 0; pos_rows < TABLE_COUNT; pos_rows = pos_rows + 2) { 
-
         for(pos_cols = 0; pos_cols < TABLE_COUNT; pos_cols++) {
-            if (pos_rows != pos_cols) { // Detects Main Diagonal Pair, we skip the pair
+            if (pos_rows != pos_cols) {
                 table[pos_rows][pos_cols] = even;
                 even = even + 2;
             }
-            
         }
     }
 
@@ -66,6 +69,14 @@ void init_table (FILE *log) {
                 odd = odd + 2;
             }
         }
+    }
+
+     // Print table to LOG file
+    for (int i = 0; i < TABLE_COUNT; i++) {
+        for (int j = 0; j < TABLE_COUNT; j++){
+            fprintf(log, "%d ", table[i][j]);
+        }
+        fprintf(log, "\n");
     }
 }
 
@@ -85,7 +96,7 @@ int search (int input, FILE *log) {
             }
         }
     }
-        return mul_count;
+    return mul_count;
 }
 
 // Percentage Calculation Function 
@@ -106,26 +117,33 @@ int main() {
     int run = true;
     int run_con;
 
+    // Prime Number Generation
+    genPrimes(TABLE_COUNT);
+
+    // Intialize Table
     init_table(log);
 
     // Main Program Loop
     while (run) {
 
+        // Input
         printf("Enter a Number to Search: ");
         scanf("%d", &input);
 
+        // Search Function
         mul_count = search(input, log);
         
+        // Percentage Calculation
         mul_percent = percent_calculation((float)mul_count);
 
         printf("Multiple(s) of %d Found: %d\n", input, mul_count);
 
-        fprintf(log, "Total matches: %d\n", mul_count);
-        fprintf(log, "Percent of table: %.2f%%\n\n", mul_percent);
+        fprintf(log, "Multiple(s) of %d Found: %d\n", input, mul_count);
+        fprintf(log, "Percentage: %.2f%%\n\n", mul_percent);
 
         printf("Input a new number? (1 = Yes / 0 = No): ");
         scanf("%d", &run_con);
-
+        
         if  (run_con == 0) {
             printf("Program Stopped!");
             fprintf(log, "Program stopped by user.\n");
@@ -136,7 +154,7 @@ int main() {
             continue;
         }
     }
-
+    
     fclose(log);
     return 0;
 }
